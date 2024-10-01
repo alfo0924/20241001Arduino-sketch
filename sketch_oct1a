@@ -2,7 +2,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   pinMode(16,INPUT_PULLUP);
-  //PULLUP
+  //PULLUP（上拉）是指在Arduino中使用內部上拉電阻的一種輸入模式
 
 }
 
