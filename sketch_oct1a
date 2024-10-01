@@ -9,6 +9,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 bool p16 = digitalRead(16);
+//bool p16 = digitalRead(16); 讀取腳位16的當前狀態。
 Serial.println(p16);
 delay(500);
 }
