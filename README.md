@@ -118,3 +118,78 @@ void loop() {
    - `delay(500);` 暫停程式執行500毫秒（0.5秒）。
 
 
+
+
+
+
+## sketch_oct1c 按鈕控制 LED 程式碼解析
+
+### 全域變數
+
+```cpp
+bool ledState = false;  // LED的狀態
+bool lastButtonState = true;  // 上一次按鈕的狀態
+```
+
+- `ledState`：追蹤 LED 的當前狀態（開或關）。
+- `lastButtonState`：記錄上一次讀取的按鈕狀態，用於檢測狀態變化。
+
+### setup() 函式
+
+```cpp
+void setup() {
+  Serial.begin(9600);
+  pinMode(16, INPUT_PULLUP);
+  pinMode(4, OUTPUT);
+  digitalWrite(4, LOW);
+}
+```
+
+1. 初始化串口通訊，設定鮑率為 9600。
+2. 設定腳位 16 為輸入上拉模式（用於按鈕）。
+3. 設定腳位 4 為輸出模式（用於 LED）。
+4. 初始化 LED 為關閉狀態。
+
+### loop() 函式
+
+```cpp
+void loop() {
+  bool p16 = digitalRead(16);
+  Serial.println(p16);
+
+  if (lastButtonState == true && p16 == false) {
+    ledState = !ledState;
+    digitalWrite(4, ledState ? HIGH : LOW);
+  }
+
+  lastButtonState = p16;
+  delay(50);
+}
+```
+
+1. **讀取按鈕狀態**：
+   - `bool p16 = digitalRead(16);` 讀取腳位 16 的當前狀態。
+   - `Serial.println(p16);` 將按鈕狀態輸出到串口。
+
+2. **檢測按鈕按下**：
+   - `if (lastButtonState == true && p16 == false)` 檢查按鈕是否從未按下狀態變為按下狀態。
+
+3. **切換 LED 狀態**：
+   - `ledState = !ledState;` 反轉 LED 狀態。
+   - `digitalWrite(4, ledState ? HIGH : LOW);` 根據 `ledState` 設定 LED 的開或關。
+
+4. **更新按鈕狀態**：
+   - `lastButtonState = p16;` 儲存當前按鈕狀態為下一次循環的上一狀態。
+
+5. **延遲**：
+   - `delay(50);` 短暫延遲以防止按鈕彈跳。
+
+**  程式功能總結 **
+
+1. **按鈕控制**：每次按下按鈕時，LED 狀態會切換（開→關或關→開）。
+2. **狀態記憶**：使用 `ledState` 變數記住 LED 的當前狀態，即使在多次 `loop()` 執行之間也能保持。
+3. **邊緣檢測**：通過比較當前和上一次的按鈕狀態，只在按鈕剛被按下時執行動作，避免持續按住按鈕時重複觸發。
+4. **防彈跳**：使用短暫延遲來減少按鈕彈跳造成的誤觸。
+5. **狀態監控**：持續通過串口輸出按鈕的當前狀態，方便調試和監控。
+
+這個程式展示了如何實現一個簡單但有效的按鈕控制 LED 的功能，同時考慮了實際應用中可能遇到的問題，如按鈕彈跳和狀態保持。
